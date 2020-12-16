@@ -3,7 +3,7 @@
 # Apertura de paquetes ----------------------------------------------------
 
 
-pacman::p_load(tidyverse, mirt)
+pacman::p_load(tidyverse, mirt, stringr)
 
 
 # Creación de datos -------------------------------------------------------
@@ -38,6 +38,25 @@ plot(model, type = "trace")
 M2(model)
 itemfit(model)
 itemfit(model, empirical.plot = 9, empirical.CI = .95)
+personfit(model)
 
+
+
+# Ordenamiento de ítems por dificultad ------------------------------------
+
+dif=coef(model, IRTpars=T, simplify =T)$items[,2] ## dificultades
+
+it_orden=function(data, coefs){
+  dificultades=data.frame(cbind(items=names(data),dif=coefs))
+  dificultades = dificultades %>% mutate(dif = as.numeric(as.character(dif))) %>% arrange(dif)
+  datos_orden=datos[,as.character(dificultades$items)]
+  return(datos_orden)
+}
+
+
+hola=it_orden(datos, coefs = dif)
+
+
+hola %>% colSums()
 
 
